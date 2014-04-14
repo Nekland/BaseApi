@@ -26,6 +26,10 @@ abstract class Api implements ApiInterface
         $this->client = $httpClient;
     }
 
+    /**
+     * @param string $name
+     * @return \Nekland\BaseApi\Api\AbstractApi
+     */
     abstract public function api($name);
 
     /***
