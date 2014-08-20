@@ -11,10 +11,9 @@
 
 namespace Nekland\BaseApi;
 
-
 use Nekland\BaseApi\Http\ClientInterface;
 
-abstract class Api implements ApiInterface
+abstract class ApiFactory implements ApiInterface
 {
     /**
      * @var ClientInterface

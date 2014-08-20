@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * This file is a part of nekland base api package
+ *
+ * (c) Nekland <nekland.fr@gmail.fr>
+ *
+ * For the full license, take a look to the LICENSE file
+ * on the root directory of this project
+ */
+namespace Nekland\BaseApi\Http\ClientAdapter;
+
+
+use Nekland\BaseApi\Http\ClientInterface;
+
+abstract class AbstractAdapter implements ClientInterface
+{
+    private $options;
+
+    public function __construct(array $options = [])
+    {
+        $this->options = $options;
+    }
+}

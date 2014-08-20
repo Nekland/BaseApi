@@ -16,5 +16,13 @@ interface ClientInterface
 {
     public function get($path, array $parameters = [], array $headers = []);
 
+    public function post($path, array $parameters = [], array $headers = []);
+
+    public function put($path, array $parameters = [], array $headers = []);
+
+    public function delete($path, array $parameters = [], array $headers = []);
+
+    public function setFormatter();
+
     public function authenticate($method, array $options);
 }

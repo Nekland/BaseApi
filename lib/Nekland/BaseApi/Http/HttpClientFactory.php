@@ -11,12 +11,11 @@
 
 namespace Nekland\BaseApi\Http;
 
-use Guzzle\Http\Client as GuzzleClient;
 use Guzzle\Http\Exception\ServerErrorResponseException;
 use Nekland\BaseApi\Http\Auth\AuthFactory;
 use Nekland\BaseApi\Http\Auth\AuthListener;
 
-abstract class HttpClient implements ClientInterface
+abstract class HttpClientFactory implements ClientInterface
 {
     /**
      * @var array
@@ -32,24 +31,14 @@ abstract class HttpClient implements ClientInterface
     private $headers = [];
 
     /**
-     * @var \Guzzle\Http\Message\Request
-     */
-    private $lastRequest;
-
-    /**
-     * @var \Guzzle\Http\Message\Response
-     */
-    private $lastResponse;
-
-    /**
      * @var AuthFactory
      */
     private $authFactory;
 
-    public function __construct(array $options = [])
+    public function __construct(array $options = [], $client)
     {
-        $this->options = array_merge($this->options, $options);
-        $this->client = new GuzzleClient($this->options['base_url'], $this->options);
+        $this->options = array_merge_recursive($this->options, $options);
+        $this->client = $this->createGuzzleClient();
         $this->authFactory = new AuthFactory();
 
         $this->clearHeaders();
@@ -72,7 +61,6 @@ abstract class HttpClient implements ClientInterface
     {
         return $this->request($path, null, 'GET', $headers, array('query' => $parameters))->getBody();
     }
-
 
     public function request($path, $body = null, $httpMethod = 'GET', array $headers = array(), array $options = array())
     {
@@ -123,22 +111,6 @@ abstract class HttpClient implements ClientInterface
             $body,
             $options
         );
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getLastRequest()
-    {
-        return $this->lastRequest;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getLastResponse()
-    {
-        return $this->lastResponse;
     }
 
     /**
