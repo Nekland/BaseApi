@@ -11,6 +11,8 @@
 
 namespace Nekland\BaseApi;
 
+use Nekland\BaseApi\Exception\MissingApiException;
+
 use Nekland\BaseApi\Http\ClientInterface;
 
 abstract class ApiFactory implements ApiInterface
@@ -24,12 +26,6 @@ abstract class ApiFactory implements ApiInterface
     {
         $this->client = $httpClient;
     }
-
-    /**
-     * @param string $name
-     * @return \Nekland\BaseApi\Api\AbstractApi
-     */
-    abstract public function api($name);
 
     /***
      * @param string $method
@@ -47,4 +43,26 @@ abstract class ApiFactory implements ApiInterface
     {
         return $this->client;
     }
+
+    public function __call($name)
+    {
+        $apiName = str_replace(['get', 'Api'], '', str_replace('Api', '', $name));
+
+        foreach ($this->getApiNamespaces() as $namespace) {
+            $class = $namespace . '\\' . $apiName;
+            if (class_exists($class)) {
+                return new $class($this->client);
+            }
+        }
+
+        throw new MissingApiException($apiName);
+    }
+
+    /**
+     * Return array of namespaces where AbstractApi instance are localized
+     *
+     *
+     * @return string[] Example: ['Nekland\BaseApi\Api']
+     */
+    abstract protected function getApiNamespaces();
 }
