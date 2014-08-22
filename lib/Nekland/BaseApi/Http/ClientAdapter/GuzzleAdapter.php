@@ -12,8 +12,52 @@
 namespace Nekland\BaseApi\Http\ClientAdapter;
 
 
-use Nekland\BaseApi\Http\ClientInterface;
+use GuzzleHttp\Client;
 
 class GuzzleAdapter extends AbstractAdapter
 {
+    /**
+     * @var \GuzzleHttp\Client
+     */
+    private $guzzle;
+
+    /**
+     * @var
+     */
+    private $formatter;
+
+    public function __construct(Client $client = null)
+    {
+        $this->guzzle = $client ?: new Client();
+    }
+
+    public function get($path, array $parameters = [], array $headers = [])
+    {
+        // TODO: Implement get() method.
+    }
+
+    public function post($path, array $parameters = [], array $headers = [])
+    {
+        // TODO: Implement post() method.
+    }
+
+    public function put($path, array $parameters = [], array $headers = [])
+    {
+        // TODO: Implement put() method.
+    }
+
+    public function delete($path, array $parameters = [], array $headers = [])
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function setFormatter()
+    {
+        // TODO: Implement setFormatter() method.
+    }
+
+    public function authenticate($method, array $options)
+    {
+        // TODO: Implement authenticate() method.
+    }
 }

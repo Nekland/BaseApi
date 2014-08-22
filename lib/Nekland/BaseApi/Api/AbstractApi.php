@@ -11,20 +11,54 @@
 
 namespace Nekland\BaseApi\Api;
 
-
 use Nekland\BaseApi\Api;
+use Nekland\BaseApi\Http\ClientInterface;
+use Nekland\BaseApi\Transformer\JsonTransformer;
+use Nekland\BaseApi\Transformer\TransformerInterface;
 
 abstract class AbstractApi
 {
-    protected $api;
+    /**
+     * @var ClientInterface
+     */
+    private $client;
 
-    public function __construct(Api $api)
+    /**
+     * @var TransformerInterface
+     */
+    private $transformer;
+
+    public function __construct(ClientInterface $client, TransformerInterface $transformer = null)
     {
-        $this->api = $api;
+        $this->client    = $client;
+        $this->transformer = $transformer ?: new JsonTransformer();
+    }
+
+    /**
+     * Set the transformer that will be used to return data
+     *
+     * @param  TransformerInterface $transformer
+     * @return self
+     */
+    public function setTransformer(TransformerInterface $transformer)
+    {
+        $this->transformer = $transformer;
+
+        return $this;
     }
 
     protected function get($path, array $parameters = [], array $requestHeaders = [])
     {
-        return json_decode((string) $this->api->getClient()->get($path, $parameters, $requestHeaders), true);
+        return $this->transformer->transform($this->getClient()->get($path, $parameters, $requestHeaders));
+    }
+
+    protected function getClient()
+    {
+        return $this->client;
+    }
+
+    protected function getTransformer()
+    {
+        return $this->transformer;
     }
 }

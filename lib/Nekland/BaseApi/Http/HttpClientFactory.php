@@ -35,7 +35,7 @@ abstract class HttpClientFactory implements ClientInterface
      */
     private $authFactory;
 
-    public function __construct(array $options = [], $client)
+    public function __construct(array $options = [])
     {
         $this->options = array_merge_recursive($this->options, $options);
         $this->client = $this->createGuzzleClient();
