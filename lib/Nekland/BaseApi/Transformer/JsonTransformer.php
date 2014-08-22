@@ -14,5 +14,15 @@ namespace Nekland\BaseApi\Transformer;
 
 class JsonTransformer implements TransformerInterface
 {
-
+    /**
+     * Depending on what formatter will be used, the data will be transform.
+     *
+     * @param  string $data
+     * @param  string $type Type of data that is sent
+     * @return array
+     */
+    public function transform($data, $type = self::UNKNOWN)
+    {
+        return json_decode($data, true);
+    }
 }

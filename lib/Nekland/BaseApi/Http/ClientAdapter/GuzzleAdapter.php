@@ -21,11 +21,6 @@ class GuzzleAdapter extends AbstractAdapter
      */
     private $guzzle;
 
-    /**
-     * @var
-     */
-    private $formatter;
-
     public function __construct(Client $client = null)
     {
         $this->guzzle = $client ?: new Client();
@@ -49,11 +44,6 @@ class GuzzleAdapter extends AbstractAdapter
     public function delete($path, array $parameters = [], array $headers = [])
     {
         // TODO: Implement delete() method.
-    }
-
-    public function setFormatter()
-    {
-        // TODO: Implement setFormatter() method.
     }
 
     public function authenticate($method, array $options)

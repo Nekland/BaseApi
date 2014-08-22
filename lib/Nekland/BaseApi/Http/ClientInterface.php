@@ -22,7 +22,5 @@ interface ClientInterface
 
     public function delete($path, array $parameters = [], array $headers = []);
 
-    public function setFormatter();
-
     public function authenticate($method, array $options);
 }
