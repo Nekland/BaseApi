@@ -21,14 +21,18 @@ class GuzzleAdapter extends AbstractAdapter
      */
     private $guzzle;
 
-    public function __construct(Client $client = null)
+    public function __construct(array $options = [], Client $client = null)
     {
+        parent::__construct($options);
         $this->guzzle = $client ?: new Client();
     }
 
     public function get($path, array $parameters = [], array $headers = [])
     {
-        // TODO: Implement get() method.
+        return $this->guzzle->get($this->getPath($path), [
+            'headers' => $this->getHeaders($headers),
+            'body'    => $parameters
+        ])->getBody();
     }
 
     public function post($path, array $parameters = [], array $headers = [])

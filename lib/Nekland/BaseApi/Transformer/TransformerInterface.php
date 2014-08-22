@@ -11,10 +11,10 @@
 
 namespace Nekland\BaseApi\Transformer;
 
-
 interface TransformerInterface
 {
     const UNKNOWN = 'unknown';
+
     /**
      * Depending on what formatter will be used, the data will be transform.
      *

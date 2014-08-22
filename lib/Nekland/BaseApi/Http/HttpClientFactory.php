@@ -15,15 +15,8 @@ use Guzzle\Http\Exception\ServerErrorResponseException;
 use Nekland\BaseApi\Http\Auth\AuthFactory;
 use Nekland\BaseApi\Http\Auth\AuthListener;
 
-abstract class HttpClientFactory implements ClientInterface
+class HttpClientFactory
 {
-    /**
-     * @var array
-     */
-    private $options = [
-        'base_url'   => '',
-        'user_agent' => 'php-base-api (https://github.com/Nekland/BaseApi)'
-    ];
 
     /**
      * @var array
