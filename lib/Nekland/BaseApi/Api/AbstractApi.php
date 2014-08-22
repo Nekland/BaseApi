@@ -12,6 +12,7 @@
 namespace Nekland\BaseApi\Api;
 
 use Nekland\BaseApi\Api;
+use Nekland\BaseApi\Cache\CacheStrategyInterface;
 use Nekland\BaseApi\Http\ClientInterface;
 use Nekland\BaseApi\Transformer\JsonTransformer;
 use Nekland\BaseApi\Transformer\TransformerInterface;
@@ -28,10 +29,19 @@ abstract class AbstractApi
      */
     private $transformer;
 
-    public function __construct(ClientInterface $client, TransformerInterface $transformer = null)
-    {
+    /**
+     * @var \Nekland\BaseApi\Cache\CacheStrategyInterface
+     */
+    private $cache;
+
+    public function __construct(
+        ClientInterface $client,
+        TransformerInterface $transformer = null,
+        CacheStrategyInterface $cache = null
+    ) {
         $this->client    = $client;
         $this->transformer = $transformer ?: new JsonTransformer();
+        $this->cache       = $cache;
     }
 
     /**
@@ -47,9 +57,27 @@ abstract class AbstractApi
         return $this;
     }
 
-    protected function get($path, array $parameters = [], array $requestHeaders = [])
+    protected function get($path, array $parameters = [], array $headers = [])
     {
-        return $this->transformer->transform($this->getClient()->get($path, $parameters, $requestHeaders));
+        $client = $this->getClient();
+
+        $closure = function ($path, array $parameters = [], array $headers = []) use ($client) {
+            return $client->get($path, $parameters, $headers);
+        };
+
+        return $this->transformer->transform($this->execute(
+            $closure,
+            ['path' => $path, 'parameters' => $parameters, 'headers' => $headers]
+        ));
+    }
+
+    private function execute($closure, $parameters)
+    {
+        if ($this->cache !== null) {
+            return $this->cache->prepare($closure, $parameters);
+        }
+
+        return $closure($parameters['path'], $parameters['parameters'], $parameters['headers']);
     }
 
     protected function getClient()
