@@ -13,6 +13,10 @@ namespace Nekland\BaseApi\Http\ClientAdapter;
 
 
 use GuzzleHttp\Client;
+use Nekland\BaseApi\Http\Event\Events;
+use Nekland\BaseApi\Http\Event\RequestEvent;
+use Nekland\BaseApi\Http\Request;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class GuzzleAdapter extends AbstractAdapter
 {
@@ -21,37 +25,35 @@ class GuzzleAdapter extends AbstractAdapter
      */
     private $guzzle;
 
-    public function __construct(array $options = [], Client $client = null)
+    public function __construct(array $options = [], EventDispatcher $dispatcher = null, Client $client = null)
     {
-        parent::__construct($options);
+        parent::__construct($dispatcher, $options);
         $this->guzzle = $client ?: new Client();
     }
 
-    public function get($path, array $parameters = [], array $headers = [])
+    public function send(Request $request)
     {
-        return $this->guzzle->get($this->getPath($path), [
-            'headers' => $this->getHeaders($headers),
-            'body'    => $parameters
+        $method = $request->getMethod();
+
+        if (!in_array($method, ['get', 'put', 'post', 'delete'])) {
+            throw new \BadMethodCallException(sprintf(
+                'The http method "%s" does not exists or is not supported.',
+                $method
+            ));
+        }
+
+        $event = new RequestEvent($request);
+
+        $this->getEventDispatcher()->dispatch(Events::ON_REQUEST_EVENT, $event);
+
+        if ($event->requestCompleted()) {
+            return $event->getResponse();
+        }
+
+
+        return $this->guzzle->$method($this->getPath($request->getPath()), [
+            'headers' => $this->getHeaders($request->getHeaders()),
+            'body'    => $request->getBody()
         ])->getBody();
-    }
-
-    public function post($path, array $parameters = [], array $headers = [])
-    {
-        // TODO: Implement post() method.
-    }
-
-    public function put($path, array $parameters = [], array $headers = [])
-    {
-        // TODO: Implement put() method.
-    }
-
-    public function delete($path, array $parameters = [], array $headers = [])
-    {
-        // TODO: Implement delete() method.
-    }
-
-    public function authenticate($method, array $options)
-    {
-        // TODO: Implement authenticate() method.
     }
 }

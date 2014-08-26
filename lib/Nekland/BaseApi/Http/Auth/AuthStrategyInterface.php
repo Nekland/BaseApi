@@ -12,7 +12,7 @@
 namespace Nekland\BaseApi\Http\Auth;
 
 
-interface AuthInterface
+interface AuthStrategyInterface
 {
     /**
      * @param array $options

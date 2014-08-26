@@ -8,10 +8,13 @@
  * For the full license, take a look to the LICENSE file
  * on the root directory of this project
  */
+
 namespace Nekland\BaseApi\Http\ClientAdapter;
 
 
 use Nekland\BaseApi\Http\ClientInterface;
+use Nekland\BaseApi\Http\Request;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 abstract class AbstractAdapter implements ClientInterface
 {
@@ -23,8 +26,14 @@ abstract class AbstractAdapter implements ClientInterface
         'user_agent' => 'php-base-api (https://github.com/Nekland/BaseApi)'
     ];
 
-    public function __construct(array $options = [])
+    /**
+     * @var \Symfony\Component\EventDispatcher\EventDispatcher
+     */
+    private $dispatcher;
+
+    public function __construct(EventDispatcher $eventDispatcher, array $options = [])
     {
+        $this->dispatcher = $eventDispatcher;
         $this->options = array_merge($this->options, $options);
     }
 
@@ -48,5 +57,25 @@ abstract class AbstractAdapter implements ClientInterface
     protected function getPath($path)
     {
         return $this->options['base_url'] . $path;
+    }
+
+    /**
+     * @param  string $method
+     * @param  string $path
+     * @param  array  $parameters
+     * @param  array  $headers
+     * @return Request
+     */
+    public static function createRequest($method, $path, array $parameters = [], array $headers = [])
+    {
+        return new Request($method, $path, $parameters, $headers);
+    }
+
+    /**
+     * @return EventDispatcher
+     */
+    public function getEventDispatcher()
+    {
+        return $this->dispatcher;
     }
 }

@@ -29,19 +29,9 @@ abstract class AbstractApi
      */
     private $transformer;
 
-    /**
-     * @var \Nekland\BaseApi\Cache\CacheStrategyInterface
-     */
-    private $cache;
-
-    public function __construct(
-        ClientInterface $client,
-        TransformerInterface $transformer = null,
-        CacheStrategyInterface $cache = null
-    ) {
-        $this->client    = $client;
+    public function __construct(ClientInterface $client, TransformerInterface $transformer = null) {
+        $this->client      = $client;
         $this->transformer = $transformer ?: new JsonTransformer();
-        $this->cache       = $cache;
     }
 
     /**
@@ -57,34 +47,81 @@ abstract class AbstractApi
         return $this;
     }
 
-    protected function get($path, array $parameters = [], array $headers = [])
+    /**
+     * Execute a http get query
+     *
+     * @param  string $path
+     * @param  array  $body
+     * @param  array  $headers
+     * @return array|mixed
+     */
+    protected function get($path, array $body = [], array $headers = [])
     {
         $client = $this->getClient();
+        $request = $client::createRequest('GET', $path, $body, $headers);
 
-        $closure = function ($path, array $parameters = [], array $headers = []) use ($client) {
-            return $client->get($path, $parameters, $headers);
-        };
-
-        return $this->transformer->transform($this->execute(
-            $closure,
-            ['path' => $path, 'parameters' => $parameters, 'headers' => $headers]
-        ));
+        return $this->transformer->transform($client->send($request));
     }
 
-    private function execute($closure, $parameters)
+    /**
+     * Execute a http put query
+     *
+     * @param  string $path
+     * @param  array  $body
+     * @param  array  $headers
+     * @return array|mixed
+     */
+    protected function put($path, array $body = [], array $headers = [])
     {
-        if ($this->cache !== null) {
-            return $this->cache->prepare($closure, $parameters);
-        }
+        $client = $this->getClient();
+        $request = $client::createRequest('PUT', $path, $body, $headers);
 
-        return $closure($parameters['path'], $parameters['parameters'], $parameters['headers']);
+        return $this->transformer->transform($client->send($request));
     }
 
+    /**
+     * Execute a http post query
+     *
+     * @param  string $path
+     * @param  array  $body
+     * @param  array  $headers
+     * @return array|mixed
+     */
+    protected function post($path, array $body = [], array $headers = [])
+    {
+        $client = $this->getClient();
+        $request = $client::createRequest('POST', $path, $body, $headers);
+
+        return $this->transformer->transform($client->send($request));
+    }
+
+    /**
+     * Execute a http delete query
+     *
+     * @param  string $path
+     * @param  array  $body
+     * @param  array  $headers
+     * @return array|mixed
+     */
+    protected function delete($path, array $body = [], array $headers = [])
+    {
+        $client = $this->getClient();
+        $request = $client::createRequest('DELETE', $path, $body, $headers);
+
+        return $this->transformer->transform($client->send($request));
+    }
+
+    /**
+     * @return ClientInterface
+     */
     protected function getClient()
     {
         return $this->client;
     }
 
+    /**
+     * @return TransformerInterface
+     */
     protected function getTransformer()
     {
         return $this->transformer;

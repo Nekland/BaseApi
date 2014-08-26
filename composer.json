@@ -11,16 +11,17 @@
             "homepage": "http://nekland.fr"
         }
     ],
+    "require": {
+        "php": ">=5.4",
+        "symfony/event-dispatcher": "~2.3"
+    },
     "suggest": {
         "nekland/youtube-api":    "Youtube API made easy !",
         "nekland/soundcloud-api": "Soundcloud API made easy !",
-        "guzzle/guzzle":                  "The default HttpClient will not work without this library."
+        "guzzle/guzzle":          "The default HttpClient will not work without this library."
     },
     "autoload": {
         "psr-0": { "Nekland\\": "lib/" }
-    },
-    "require": {
-        "php":               ">=5.4"
     },
     "require-dev": {
         "phpspec/phpspec":   "dev-master",

@@ -12,12 +12,12 @@
 namespace Nekland\BaseApi\Cache;
 
 
+use Nekland\BaseApi\Http\Event\RequestEvent;
+
 interface CacheStrategyInterface
 {
     /**
-     * @param  callable $closure
-     * @param  array    $parameters
-     * @return mixed
+     * @param  RequestEvent $event
      */
-    public function prepare($closure, $parameters);
+    public function execute(RequestEvent $event);
 }

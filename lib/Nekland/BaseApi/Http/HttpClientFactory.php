@@ -11,98 +11,111 @@
 
 namespace Nekland\BaseApi\Http;
 
-use Guzzle\Http\Exception\ServerErrorResponseException;
+use Nekland\BaseApi\Cache\CacheStrategyInterface;
 use Nekland\BaseApi\Http\Auth\AuthFactory;
 use Nekland\BaseApi\Http\Auth\AuthListener;
+use Nekland\BaseApi\Http\Auth\AuthStrategyInterface;
+use Nekland\BaseApi\Http\ClientAdapter\GuzzleAdapter;
+use Nekland\BaseApi\Http\Event\Events;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class HttpClientFactory
 {
-
-    /**
-     * @var array
-     */
-    private $headers = [];
-
     /**
      * @var AuthFactory
      */
     private $authFactory;
 
-    public function __construct(array $options = [])
+    /**
+     * @var \Symfony\Component\EventDispatcher\EventDispatcher
+     */
+    private $dispatcher;
+
+    /**
+     * @var string
+     */
+    private $classes = [
+        'guzzle4' => 'Nekland\BaseApi\Api\Http\ClientAdapter\GuzzleAdapter'
+    ];
+
+    private $options = [];
+
+    public function __construct(array $options = [], EventDispatcher $eventDispatcher = null)
     {
-        $this->options = array_merge_recursive($this->options, $options);
-        $this->client = $this->createGuzzleClient();
+        $this->options     = array_merge_recursive($this->options, $options);
+        $this->dispatcher  = $eventDispatcher ?: new EventDispatcher();
         $this->authFactory = new AuthFactory();
-
-        $this->clearHeaders();
-    }
-
-    protected function clearHeaders()
-    {
-        $this->headers = [
-            'User-Agent' => $this->options['user_agent']
-        ];
     }
 
     /**
-     * @param $path
-     * @param array $parameters
-     * @param array $headers
-     * @return \Guzzle\Http\Message\Response
+     * Generate an HttpClient object
+     *
+     * @param  string  $name
+     * @param  null    $client
+     * @return GuzzleAdapter|null
+     * @throws \InvalidArgumentException
      */
-    public function get($path, array $parameters = [], array $headers = [])
+    public function createHttpClient($name = '', $client = null)
     {
-        return $this->request($path, null, 'GET', $headers, array('query' => $parameters))->getBody();
+        if (empty($name)) {
+            return new GuzzleAdapter($this->options, $client);
+        }
+
+        if (!isset($this->classes[$name])) {
+            throw new \InvalidArgumentException(sprintf('The client "%s" is not registered.', $name));
+        }
+
+        $class = $this->classes[$name];
+        $client = new $class($this->options, $client);
+
+        if ($client instanceof ClientInterface) {
+            return $client;
+        }
+
+        throw new \InvalidArgumentException('The client must be an implementation of ClientInterface.');
     }
 
-    public function request($path, $body = null, $httpMethod = 'GET', array $headers = array(), array $options = array())
+    /**
+     * @param  string $name
+     * @param  string $class
+     * @throws \InvalidArgumentException
+     */
+    public function register($name, $class)
     {
-        $request = $this->createRequest($httpMethod, $path, $body, $headers, $options);
+        if (class_exists($class)) {
+            $this->classes[$name] = $class;
+        }
 
-        $response = $this->client->send($request);
-
-        $this->lastRequest  = $request;
-        $this->lastResponse = $response;
-
-
-        return $response;
+        throw new \InvalidArgumentException(sprintf('%s is not a valid class name.', $name));
     }
 
-    /***
-     * @param string $method
-     * @param array  $options
+    /**
+     * Allow the user to add an authentication to the request
+     *
+     * @param string|AuthStrategyInterface $auth
+     * @param array                        $options
      */
-    public function authenticate($method, array $options)
+    public function authenticate($auth, array $options = [])
     {
-        $auth = $this->authFactory->get($method);
-        $auth->setOptions($options);
+        if (!($auth instanceof AuthStrategyInterface)) {
+            $auth = $this->authFactory->get($auth);
+            $auth->setOptions($options);
+        }
 
-        $this->addListener('request.before_send', array(
+        $this->dispatcher->addListener(Events::ON_REQUEST_EVENT, array(
             new AuthListener($auth),
             'onRequestBeforeSend'
         ));
     }
 
     /**
-     * Add an event on the http client
-     *
-     * @param $eventName
-     * @param $listener
+     * @param CacheStrategyInterface $cacheStrategy
      */
-    public function addListener($eventName, $listener)
+    public function useCache(CacheStrategyInterface $cacheStrategy)
     {
-        $this->client->getEventDispatcher()->addListener($eventName, $listener);
-    }
-
-
-    protected function createRequest($httpMethod, $path, $body = null, array $headers = array(), array $options = array())
-    {
-        return $this->client->createRequest(
-            $httpMethod,
-            $path,
-            array_merge($this->headers, $headers),
-            $body,
-            $options
+        $this->dispatcher->addListener(
+            Events::ON_REQUEST_EVENT,
+            [ $cacheStrategy, 'execute' ]
         );
     }
 
@@ -126,5 +139,4 @@ class HttpClientFactory
 
         return $this;
     }
-
 }

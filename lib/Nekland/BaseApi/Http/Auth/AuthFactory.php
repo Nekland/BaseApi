@@ -34,7 +34,7 @@ class AuthFactory
 
     /**
      * @param string $authName
-     * @return AuthInterface
+     * @return AuthStrategyInterface
      * @throws \RuntimeException
      */
     public function get($authName)

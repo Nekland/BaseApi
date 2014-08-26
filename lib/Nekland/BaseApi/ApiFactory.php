@@ -40,7 +40,7 @@ abstract class ApiFactory implements ApiInterface
      */
     public function authenticate($method, array $options)
     {
-        $this->client->authenticate($method, $options);
+        $this->clientFactory->authenticate($method, $options);
     }
 
     /**
@@ -48,7 +48,7 @@ abstract class ApiFactory implements ApiInterface
      */
     public function getClient()
     {
-        return $this->client;
+        return $this->clientFactory->createHttpClient();
     }
 
     /**
