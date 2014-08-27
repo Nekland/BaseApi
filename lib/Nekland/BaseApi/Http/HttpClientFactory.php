@@ -11,64 +11,61 @@
 
 namespace Nekland\BaseApi\Http;
 
-use Nekland\BaseApi\Cache\CacheStrategyInterface;
 use Nekland\BaseApi\Http\Auth\AuthFactory;
 use Nekland\BaseApi\Http\Auth\AuthListener;
-use Nekland\BaseApi\Http\Auth\AuthStrategyInterface;
 use Nekland\BaseApi\Http\ClientAdapter\GuzzleAdapter;
-use Nekland\BaseApi\Http\Event\Events;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class HttpClientFactory
 {
-    /**
-     * @var AuthFactory
-     */
-    private $authFactory;
-
     /**
      * @var \Symfony\Component\EventDispatcher\EventDispatcher
      */
     private $dispatcher;
 
     /**
-     * @var string
+     * @var array
      */
     private $classes = [
-        'guzzle4' => 'Nekland\BaseApi\Api\Http\ClientAdapter\GuzzleAdapter'
+        'guzzle4' => [
+            'class'       => 'Nekland\BaseApi\Http\ClientAdapter\GuzzleAdapter',
+            'requirement' => 'GuzzleHttp\Client'
+        ]
     ];
 
+    /**
+     * @var array
+     */
     private $options = [];
 
     public function __construct(array $options = [], EventDispatcher $eventDispatcher = null)
     {
         $this->options     = array_merge_recursive($this->options, $options);
         $this->dispatcher  = $eventDispatcher ?: new EventDispatcher();
-        $this->authFactory = new AuthFactory();
     }
 
     /**
-     * Generate an HttpClient object
+     * Generate the best http client according to the detected configuration
      *
      * @param  string  $name
      * @param  null    $client
-     * @return GuzzleAdapter|null
+     * @return GuzzleAdapter|AbstractHttpClient
      * @throws \InvalidArgumentException
      */
     public function createHttpClient($name = '', $client = null)
     {
         if (empty($name)) {
-            return new GuzzleAdapter($this->options, $client);
+            return $this->createBestClient();
         }
 
         if (!isset($this->classes[$name])) {
             throw new \InvalidArgumentException(sprintf('The client "%s" is not registered.', $name));
         }
 
-        $class = $this->classes[$name];
-        $client = new $class($this->options, $client);
+        $class = $this->classes[$name]['class'];
+        $client = new $class($this->dispatcher, $this->options, $client);
 
-        if ($client instanceof ClientInterface) {
+        if ($client instanceof AbstractHttpClient) {
             return $client;
         }
 
@@ -76,55 +73,55 @@ class HttpClientFactory
     }
 
     /**
-     * @param  string $name
-     * @param  string $class
+     * @return AbstractHttpClient
+     * @throws \RuntimeException
+     */
+    public function createBestClient()
+    {
+        foreach ($this->classes as $name => $definition) {
+
+            if (is_callable($definition['requirement'])) {
+                if (!call_user_func($definition['requirement'])) {
+                    continue;
+                }
+            }
+            if (!empty($definition['requirement'])) {
+                if (!class_exists($definition['requirement'])) {
+                    continue;
+                }
+            }
+            $className = $definition['class'];
+            return new $className($this->dispatcher, $this->options);
+        }
+
+        throw new \RuntimeException('Impossible to find a Client class.');
+    }
+
+    /**
+     * Register a new client that will be able to be use by the ApiFactory
+     *
+     * @param  string          $name
+     * @param  string          $class
+     * @param  string|callable $requirement
+     * @param  bool            $priority
      * @throws \InvalidArgumentException
      */
-    public function register($name, $class)
+    public function register($name, $class, $requirement = '', $priority = false)
     {
-        if (class_exists($class)) {
-            $this->classes[$name] = $class;
+        if (!class_exists($class)) {
+            throw new \InvalidArgumentException(sprintf('%s is not a valid class name.', $class));
         }
 
-        throw new \InvalidArgumentException(sprintf('%s is not a valid class name.', $name));
-    }
+        $definition = [
+            'class'       => $class,
+            'requirement' => $requirement
+        ];
 
-    /**
-     * Allow the user to add an authentication to the request
-     *
-     * @param string|AuthStrategyInterface $auth
-     * @param array                        $options
-     */
-    public function authenticate($auth, array $options = [])
-    {
-        if (!($auth instanceof AuthStrategyInterface)) {
-            $auth = $this->authFactory->get($auth);
-            $auth->setOptions($options);
+        if ($priority) {
+            $this->classes = array_merge_recursive([$name => $definition], $this->classes);
+        } else {
+            $this->classes[$name] = $definition;
         }
-
-        $this->dispatcher->addListener(Events::ON_REQUEST_EVENT, array(
-            new AuthListener($auth),
-            'onRequestBeforeSend'
-        ));
-    }
-
-    /**
-     * @param CacheStrategyInterface $cacheStrategy
-     */
-    public function useCache(CacheStrategyInterface $cacheStrategy)
-    {
-        $this->dispatcher->addListener(
-            Events::ON_REQUEST_EVENT,
-            [ $cacheStrategy, 'execute' ]
-        );
-    }
-
-    /**
-     * @return AuthFactory
-     */
-    public function getAuthFactory()
-    {
-        return $this->authFactory;
     }
 
     /**

@@ -12,6 +12,9 @@
 namespace Nekland\BaseApi\Http\Auth;
 
 
+use Nekland\BaseApi\Http\AbstractHttpClient;
+use Nekland\BaseApi\Http\HttpClientAware;
+
 class AuthFactory
 {
     /**
@@ -24,9 +27,15 @@ class AuthFactory
      */
     private $namespaces;
 
-    public function __construct()
+    /**
+     * @var \Nekland\BaseApi\Http\AbstractHttpClient
+     */
+    private $client;
+
+    public function __construct(AbstractHttpClient $client)
     {
         $this->authentications = [];
+        $this->client          = $client;
         $this->namespaces      = [
             'Nekland\\BaseApi\\Http\\Auth\\'
         ];
@@ -47,11 +56,17 @@ class AuthFactory
             $authClass = $namespace . '\\' . $authName;
 
             if (class_exists($authClass)) {
-                return new $authClass();
+                $auth = new $authClass();
+                if ($auth instanceof HttpClientAware) {
+                    $auth->setClient($this->client);
+                }
+                return $this->authentications[$authName] = $auth;
             }
         }
 
-        throw new \RuntimeException('The method "'.$authName.'" is not supported for authentication.');
+        throw new \RuntimeException(
+            sprintf('The method "%s" is not supported for authentication.', $authName)
+        );
     }
 
     /**

@@ -9,14 +9,15 @@
  * on the root directory of this project
  */
 
-namespace Nekland\BaseApi\Http\ClientAdapter;
+namespace Nekland\BaseApi\Http;
 
 
-use Nekland\BaseApi\Http\ClientInterface;
+use Nekland\BaseApi\Http\Event\Events;
+use Nekland\BaseApi\Http\Event\RequestEvent;
 use Nekland\BaseApi\Http\Request;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-abstract class AbstractAdapter implements ClientInterface
+abstract class AbstractHttpClient
 {
     /**
      * @var mixed[]
@@ -34,8 +35,45 @@ abstract class AbstractAdapter implements ClientInterface
     public function __construct(EventDispatcher $eventDispatcher, array $options = [])
     {
         $this->dispatcher = $eventDispatcher;
-        $this->options = array_merge($this->options, $options);
+        $this->options    = array_merge_recursive($this->options, $options);
     }
+
+    /**
+     * @param Request $request
+     * @return string
+     * @throws \BadMethodCallException
+     */
+    public function send(Request $request)
+    {
+        $method = $request->getMethod();
+
+        if (!in_array($method, ['get', 'put', 'post', 'delete'])) {
+            throw new \BadMethodCallException(sprintf(
+                'The http method "%s" does not exists or is not supported.',
+                $method
+            ));
+        }
+
+        /** @var RequestEvent $event */
+        $event = $this->getEventDispatcher()->dispatch(Events::ON_REQUEST_EVENT, new RequestEvent($request));
+
+        if (!$event->requestCompleted()) {
+            $res = $this->execute($request);
+            $event->setResponse($res);
+        }
+
+        $this->getEventDispatcher()->dispatch(Events::AFTER_REQUEST_EVENT, $event);
+
+        return $event->getResponse();
+    }
+
+    /**
+     * Execute a request
+     *
+     * @param Request $request
+     * @return string
+     */
+    abstract protected function execute(Request $request);
 
     /**
      * Complete headers using options
@@ -60,6 +98,8 @@ abstract class AbstractAdapter implements ClientInterface
     }
 
     /**
+     * Generate a request object
+     *
      * @param  string $method
      * @param  string $path
      * @param  array  $parameters

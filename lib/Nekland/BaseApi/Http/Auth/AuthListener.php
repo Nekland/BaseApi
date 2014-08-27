@@ -11,7 +11,7 @@
 
 namespace Nekland\BaseApi\Http\Auth;
 
-use Guzzle\Common\Event;
+use Nekland\BaseApi\Http\Event\RequestEvent;
 
 class AuthListener
 {
@@ -25,12 +25,12 @@ class AuthListener
         $this->auth = $auth;
     }
 
-    public function onRequestBeforeSend(Event $event)
+    public function onRequestBeforeSend(RequestEvent $event)
     {
         if (null === $this->auth) {
             return;
         }
 
-        $this->auth->auth($event['request']);
+        $this->auth->auth($event->getRequest());
     }
 }

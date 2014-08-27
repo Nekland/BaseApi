@@ -12,15 +12,14 @@
 namespace Nekland\BaseApi\Api;
 
 use Nekland\BaseApi\Api;
-use Nekland\BaseApi\Cache\CacheStrategyInterface;
-use Nekland\BaseApi\Http\ClientInterface;
+use Nekland\BaseApi\Http\AbstractHttpClient;
 use Nekland\BaseApi\Transformer\JsonTransformer;
 use Nekland\BaseApi\Transformer\TransformerInterface;
 
 abstract class AbstractApi
 {
     /**
-     * @var ClientInterface
+     * @var AbstractHttpClient
      */
     private $client;
 
@@ -29,7 +28,7 @@ abstract class AbstractApi
      */
     private $transformer;
 
-    public function __construct(ClientInterface $client, TransformerInterface $transformer = null) {
+    public function __construct(AbstractHttpClient $client, TransformerInterface $transformer = null) {
         $this->client      = $client;
         $this->transformer = $transformer ?: new JsonTransformer();
     }
@@ -112,7 +111,7 @@ abstract class AbstractApi
     }
 
     /**
-     * @return ClientInterface
+     * @return AbstractHttpClient
      */
     protected function getClient()
     {

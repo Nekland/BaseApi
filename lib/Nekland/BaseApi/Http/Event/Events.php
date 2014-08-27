@@ -15,4 +15,5 @@ namespace Nekland\BaseApi\Http\Event;
 class Events
 {
     const ON_REQUEST_EVENT = 'nekland_api.on_http_request';
+    const AFTER_REQUEST_EVENT = 'nekland_api.after_http_request';
 }

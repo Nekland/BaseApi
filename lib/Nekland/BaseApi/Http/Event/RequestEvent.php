@@ -41,7 +41,7 @@ class RequestEvent extends Event
     }
 
     /**
-     * @param  string $response
+     * @param  mixed $response
      * @throws \InvalidArgumentException
      */
     public function setResponse($response)
