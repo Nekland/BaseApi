@@ -18,7 +18,6 @@ use Nekland\BaseApi\Exception\MissingApiException;
 use Nekland\BaseApi\Http\Auth\AuthFactory;
 use Nekland\BaseApi\Http\Auth\AuthListener;
 use Nekland\BaseApi\Http\Auth\AuthStrategyInterface;
-use Nekland\BaseApi\Http\ClientInterface;
 use Nekland\BaseApi\Http\Event\Events;
 use Nekland\BaseApi\Http\HttpClientFactory;
 use Nekland\BaseApi\Transformer\JsonTransformer;
@@ -61,7 +60,7 @@ abstract class ApiFactory implements ApiInterface
      * @param string|AuthStrategyInterface $auth
      * @param array                        $options
      */
-    public function authenticate($auth, array $options = [])
+    public function useAuthentication($auth, array $options = [])
     {
         if (!($auth instanceof AuthStrategyInterface)) {
             $auth = $this->getAuthFactory()->get($auth);
@@ -86,7 +85,7 @@ abstract class ApiFactory implements ApiInterface
     }
 
     /**
-     * @return ClientInterface
+     * @return \Nekland\BaseApi\Http\AbstractHttpClient
      */
     public function getClient()
     {

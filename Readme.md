@@ -20,9 +20,4 @@ Documentation
 
 This project does not need so much documentation but I wrote some for interested people. Checkout the [doc](doc) folder.
 
-Inspiration
------------
-
-This project look like php-github-api, and it's not innocent. I used it as model.
-
-Thanks to KnpLabs & Contributors on this project.
+> This project is inspirated by KNPLabs api libs.

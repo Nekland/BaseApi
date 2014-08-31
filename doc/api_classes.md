@@ -8,3 +8,6 @@ She provide you useful methods (get/put/post/delete rest methods) and as the cla
 
 * getResourceById
 * deleteResource
+
+
+> You have to register a namespace to your api objects in the api factory
