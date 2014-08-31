@@ -34,7 +34,10 @@ class GuzzleAdapterSpec extends ObjectBehavior
         $request->getMethod()->willReturn('get');
         $guzzle->get()->shouldNotBeCalled();
 
-        $dispatcher->dispatch(Argument::any(), Argument::type('Nekland\BaseApi\Http\Event\RequestEvent'))->willReturn($requestEvent);
+        $dispatcher
+            ->dispatch(Argument::any(), Argument::type('Nekland\BaseApi\Http\Event\RequestEvent'))
+            ->willReturn($requestEvent)
+        ;
 
         $this->send($request);
     }

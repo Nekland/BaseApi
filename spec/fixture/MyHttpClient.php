@@ -8,7 +8,7 @@ class MyHttpClient extends \Nekland\BaseApi\Http\AbstractHttpClient
      * @param  \Nekland\BaseApi\Http\Request $request
      * @return string
      */
-    public function send(\Nekland\BaseApi\Http\Request $request)
+    public function execute(\Nekland\BaseApi\Http\Request $request)
     {
         return '';
     }

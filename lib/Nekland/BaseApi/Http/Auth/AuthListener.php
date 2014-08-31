@@ -16,11 +16,11 @@ use Nekland\BaseApi\Http\Event\RequestEvent;
 class AuthListener
 {
     /**
-     * @var AuthInterface
+     * @var AuthStrategyInterface
      */
     private $auth;
 
-    public function __construct(AuthInterface $auth)
+    public function __construct(AuthStrategyInterface $auth)
     {
         $this->auth = $auth;
     }
