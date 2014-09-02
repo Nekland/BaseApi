@@ -43,9 +43,9 @@ class GuzzleAdapterSpec extends ObjectBehavior
     }
 
     public function it_should_send_real_request_when_event_request_not_completed(
-        Request          $request,
         Client           $guzzle,
         EventDispatcher  $dispatcher,
+        Request          $request,
         RequestEvent     $requestEvent,
         MessageInterface $result
     ) {
@@ -53,12 +53,18 @@ class GuzzleAdapterSpec extends ObjectBehavior
         $guzzle->get('api.com', Argument::any())->willReturn($result);
 
         $requestEvent->requestCompleted()->willReturn(false);
-        $dispatcher->dispatch(Argument::any(), Argument::type('Nekland\BaseApi\Http\Event\RequestEvent'))->willReturn($requestEvent);
+        $dispatcher
+            ->dispatch(Argument::any(), Argument::type('Nekland\BaseApi\Http\Event\RequestEvent'))
+            ->willReturn($requestEvent)
+        ;
 
         $request->getMethod()->willReturn('get');
         $request->getPath()->willReturn('api.com');
         $request->getHeaders()->willReturn([]);
         $request->getBody()->willReturn([]);
+
+        $requestEvent->setResponse(Argument::any())->shouldBeCalled();
+        $requestEvent->getResponse()->shouldBeCalled();
 
         $this->send($request);
     }

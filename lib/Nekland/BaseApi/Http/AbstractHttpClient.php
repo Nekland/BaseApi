@@ -28,7 +28,7 @@ abstract class AbstractHttpClient
     ];
 
     /**
-     * @var \Symfony\Component\EventDispatcher\EventDispatcher
+     * @var EventDispatcher
      */
     private $dispatcher;
 
@@ -114,7 +114,7 @@ abstract class AbstractHttpClient
     /**
      * @return EventDispatcher
      */
-    public function getEventDispatcher()
+    protected function getEventDispatcher()
     {
         return $this->dispatcher;
     }
