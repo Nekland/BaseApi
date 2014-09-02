@@ -31,6 +31,6 @@ class AuthListener
             return;
         }
 
-        $this->auth->auth($event->getRequest());
+        $this->auth->auth($event);
     }
 }

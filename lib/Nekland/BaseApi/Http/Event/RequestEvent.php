@@ -12,6 +12,7 @@
 namespace Nekland\BaseApi\Http\Event;
 
 
+use Nekland\BaseApi\Http\AbstractHttpClient;
 use Nekland\BaseApi\Http\Request;
 use Symfony\Component\EventDispatcher\Event;
 
@@ -27,9 +28,15 @@ class RequestEvent extends Event
      */
     private $response;
 
-    public function __construct(Request $request)
+    /**
+     * @var \Nekland\BaseApi\Http\AbstractHttpClient
+     */
+    private $client;
+
+    public function __construct(Request $request, AbstractHttpClient $client)
     {
         $this->request = $request;
+        $this->client  = $client;
     }
 
     /**
@@ -67,5 +74,13 @@ class RequestEvent extends Event
     public function getResponse()
     {
         return $this->response;
+    }
+
+    /**
+     * @return AbstractHttpClient
+     */
+    public function getClient()
+    {
+        return $this->client;
     }
 }

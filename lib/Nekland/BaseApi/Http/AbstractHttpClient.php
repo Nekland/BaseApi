@@ -55,7 +55,7 @@ abstract class AbstractHttpClient
         }
 
         /** @var RequestEvent $event */
-        $event = $this->getEventDispatcher()->dispatch(Events::ON_REQUEST_EVENT, new RequestEvent($request));
+        $event = $this->getEventDispatcher()->dispatch(Events::ON_REQUEST_EVENT, new RequestEvent($request, $this));
 
         if (!$event->requestCompleted()) {
             $res = $this->execute($request);
