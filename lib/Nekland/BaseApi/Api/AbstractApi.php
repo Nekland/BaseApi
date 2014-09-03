@@ -56,7 +56,7 @@ abstract class AbstractApi
      */
     protected function get($path, array $body = [], array $headers = [])
     {
-        $client = $this->getClient();
+        $client  = $this->getClient();
         $request = $client::createRequest('GET', $path, $body, $headers);
 
         return $this->transformer->transform($client->send($request));
@@ -72,7 +72,7 @@ abstract class AbstractApi
      */
     protected function put($path, array $body = [], array $headers = [])
     {
-        $client = $this->getClient();
+        $client  = $this->getClient();
         $request = $client::createRequest('PUT', $path, $body, $headers);
 
         return $this->transformer->transform($client->send($request));
@@ -88,7 +88,7 @@ abstract class AbstractApi
      */
     protected function post($path, array $body = [], array $headers = [])
     {
-        $client = $this->getClient();
+        $client  = $this->getClient();
         $request = $client::createRequest('POST', $path, $body, $headers);
 
         return $this->transformer->transform($client->send($request));
@@ -104,7 +104,7 @@ abstract class AbstractApi
      */
     protected function delete($path, array $body = [], array $headers = [])
     {
-        $client = $this->getClient();
+        $client  = $this->getClient();
         $request = $client::createRequest('DELETE', $path, $body, $headers);
 
         return $this->transformer->transform($client->send($request));

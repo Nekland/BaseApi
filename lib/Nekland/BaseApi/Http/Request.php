@@ -79,4 +79,44 @@ class Request
     {
         return $this->path;
     }
+
+    /**
+     * @param  array $body
+     * @return self
+     */
+    public function setBody($body)
+    {
+        $this->body = $body;
+        return $this;
+    }
+
+    /**
+     * @param  array $headers
+     * @return self
+     */
+    public function setHeaders($headers)
+    {
+        $this->headers = $headers;
+        return $this;
+    }
+
+    /**
+     * @param  string $method
+     * @return self
+     */
+    public function setMethod($method)
+    {
+        $this->method = $method;
+        return $this;
+    }
+
+    /**
+     * @param  string $path
+     * @return self
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
+        return $this;
+    }
 }
