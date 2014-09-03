@@ -24,7 +24,7 @@ use Nekland\BaseApi\Transformer\JsonTransformer;
 use Nekland\BaseApi\Transformer\TransformerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-abstract class ApiFactory implements ApiInterface
+abstract class ApiFactory
 {
     /**
      * @var HttpClientFactory
@@ -67,10 +67,10 @@ abstract class ApiFactory implements ApiInterface
             $auth->setOptions($options);
         }
 
-        $this->dispatcher->addListener(Events::ON_REQUEST_EVENT, array(
-            new AuthListener($auth),
-            'onRequestBeforeSend'
-        ));
+        $this->dispatcher->addListener(Events::ON_REQUEST_EVENT, [
+            $auth,
+            'auth'
+        ]);
     }
 
     /**
@@ -111,6 +111,9 @@ abstract class ApiFactory implements ApiInterface
         return $this;
     }
 
+    /**
+     * @param TransformerInterface $transformer
+     */
     public function setTransformer(TransformerInterface $transformer)
     {
         $this->transformer = $transformer;

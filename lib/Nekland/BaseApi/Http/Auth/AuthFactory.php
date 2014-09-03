@@ -13,7 +13,6 @@ namespace Nekland\BaseApi\Http\Auth;
 
 
 use Nekland\BaseApi\Http\AbstractHttpClient;
-use Nekland\BaseApi\Http\HttpClientAware;
 
 class AuthFactory
 {
@@ -27,15 +26,9 @@ class AuthFactory
      */
     private $namespaces;
 
-    /**
-     * @var \Nekland\BaseApi\Http\AbstractHttpClient
-     */
-    private $client;
-
-    public function __construct(AbstractHttpClient $client)
+    public function __construct()
     {
         $this->authentications = [];
-        $this->client          = $client;
         $this->namespaces      = [
             'Nekland\\BaseApi\\Http\\Auth\\'
         ];
@@ -57,9 +50,6 @@ class AuthFactory
 
             if (class_exists($authClass)) {
                 $auth = new $authClass();
-                if ($auth instanceof HttpClientAware) {
-                    $auth->setClient($this->client);
-                }
                 return $this->authentications[$authName] = $auth;
             }
         }
