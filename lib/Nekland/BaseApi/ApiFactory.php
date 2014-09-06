@@ -16,7 +16,6 @@ use Nekland\BaseApi\Cache\CacheStrategyInterface;
 use Nekland\BaseApi\Exception\MissingApiException;
 
 use Nekland\BaseApi\Http\Auth\AuthFactory;
-use Nekland\BaseApi\Http\Auth\AuthListener;
 use Nekland\BaseApi\Http\Auth\AuthStrategyInterface;
 use Nekland\BaseApi\Http\Event\Events;
 use Nekland\BaseApi\Http\HttpClientFactory;
