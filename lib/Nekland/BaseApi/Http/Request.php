@@ -57,6 +57,15 @@ class Request
     }
 
     /**
+     * @param  string $name
+     * @return bool
+     */
+    public function hasHeader($name)
+    {
+        return isset($this->headers[$name]);
+    }
+
+    /**
      * @return string
      */
     public function getMethod()

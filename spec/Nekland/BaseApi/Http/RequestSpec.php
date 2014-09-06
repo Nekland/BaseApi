@@ -27,5 +27,8 @@ class RequestSpec extends ObjectBehavior
         $this->getBody()->shouldReturn($this->body);
         $this->getPath()->shouldReturn($this->path);
         $this->getMethod()->shouldReturn('get');
+
+        $this->hasHeader('User-Agent')->shouldReturn(true);
+        $this->hasHeader('Something-Else')->shouldReturn(false);
     }
 }
