@@ -41,10 +41,10 @@ abstract class ApiFactory
     private $transformer;
 
     public function __construct(
+        HttpClientFactory $httpClientFactory = null,
         EventDispatcher $dispatcher = null,
         TransformerInterface $transformer = null,
-        AuthFactory $authFactory = null,
-        HttpClientFactory $httpClientFactory = null
+        AuthFactory $authFactory = null
     ) {
         $this->dispatcher    = $dispatcher ?: new EventDispatcher();
         $this->clientFactory = $httpClientFactory ?: new HttpClientFactory($this->dispatcher);
@@ -151,7 +151,7 @@ abstract class ApiFactory
      */
     protected function getAuthFactory()
     {
-        return $this->authFactory ?: new AuthFactory($this->getClient());
+        return $this->authFactory ?: $this->authFactory = new AuthFactory($this->getClient());
     }
 
     /**

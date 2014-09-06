@@ -40,7 +40,7 @@ class HttpClientFactory
 
     public function __construct(array $options = [], EventDispatcher $eventDispatcher = null)
     {
-        $this->options     = array_merge_recursive($this->options, $options);
+        $this->options     = array_merge($this->options, $options);
         $this->dispatcher  = $eventDispatcher ?: new EventDispatcher();
     }
 
@@ -91,6 +91,7 @@ class HttpClientFactory
                 }
             }
             $className = $definition['class'];
+
             return new $className($this->dispatcher, $this->options);
         }
 

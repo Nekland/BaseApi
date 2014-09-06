@@ -27,7 +27,7 @@
     "suggest": {
         "nekland/youtube-api":    "Youtube API made easy !",
         "nekland/soundcloud-api": "Soundcloud API made easy !",
-        "guzzlehttp/guzzle":      "The only http adapter available for now is for this library !"
+        "guzzlehttp/guzzle":      "The only http adapter available for now is for this library."
     },
     "autoload": {
         "psr-0": { "Nekland\\": "lib/" }

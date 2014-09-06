@@ -35,7 +35,7 @@ abstract class AbstractHttpClient
     public function __construct(EventDispatcher $eventDispatcher, array $options = [])
     {
         $this->dispatcher = $eventDispatcher;
-        $this->options    = array_merge_recursive($this->options, $options);
+        $this->options    = array_merge($this->options, $options);
     }
 
     /**

@@ -11,7 +11,6 @@
 
 namespace Nekland\BaseApi\Http\Auth;
 
-
 use Nekland\BaseApi\Http\AbstractHttpClient;
 
 class AuthFactory
@@ -30,7 +29,7 @@ class AuthFactory
     {
         $this->authentications = [];
         $this->namespaces      = [
-            'Nekland\\BaseApi\\Http\\Auth\\'
+            'Nekland\\BaseApi\\Http\\Auth'
         ];
     }
 
