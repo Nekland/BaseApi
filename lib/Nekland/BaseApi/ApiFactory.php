@@ -120,30 +120,43 @@ abstract class ApiFactory
 
     /**
      * @param  string $name
-     * @param   array  $parameters
+     * @param  array  $parameters
      * @return AbstractApi
-     * @throws \RuntimeException|MissingApiException
+     * @throws \RuntimeException|MissingApiException|\BadMethodCallException
      */
     public function __call($name, $parameters)
     {
-        $apiName = str_replace(['get', 'Api'], '', str_replace('Api', '', $name));
+        if ($this->isApiMethod($name)) {
+            $apiName = str_replace(['get', 'Api'], '', str_replace('Api', '', $name));
 
-        foreach ($this->getApiNamespaces() as $namespace) {
-            $class = $namespace . '\\' . $apiName;
-            if (class_exists($class)) {
-                $api = new $class($this->getClient(), $this->getTransformer());
+            foreach ($this->getApiNamespaces() as $namespace) {
+                $class = $namespace . '\\' . $apiName;
+                if (class_exists($class)) {
+                    $api = new $class($this->getClient(), $this->getTransformer());
 
-                if ($api instanceof AbstractApi) {
-                    return $api;
+                    if ($api instanceof AbstractApi) {
+                        return $api;
+                    }
+
+                    throw new \RuntimeException(
+                        sprintf('The API %s is found but does not implements AbstractApi.', $apiName)
+                    );
                 }
-
-                throw new \RuntimeException(
-                    sprintf('The API %s is found but does not implements AbstractApi.', $apiName)
-                );
             }
+
+            throw new MissingApiException($apiName);
         }
 
-        throw new MissingApiException($apiName);
+        throw new \BadMethodCallException(sprintf('The method %s does not exists.', $name));
+    }
+
+    /**
+     * @param  string $name
+     * @return bool
+     */
+    protected function isApiMethod($name)
+    {
+        return (bool) preg_match('/^get[A-Z][a-zA-Z]*Api$/', $name);
     }
 
     /**
