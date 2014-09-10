@@ -25,6 +25,9 @@ class Request
     private $path;
 
     /**
+     * Body parameters
+     * used in PUT, POST and DELETE methods
+     *
      * @var array
      */
     private $body;
@@ -35,17 +38,30 @@ class Request
     private $headers;
 
     /**
+     * URI parameters
+     * basically for GET requests
+     *
+     * @var array
+     */
+    private $parameters;
+
+    /**
      * @param string $method
      * @param string $path
-     * @param array  $body
+     * @param array  $body if the method is GET it's taken as parameters
      * @param array  $headers
      */
     public function __construct($method, $path, array $body = [], array $headers = [])
     {
         $this->method  = $method;
         $this->path    = $path;
-        $this->body    = $body;
         $this->headers = $headers;
+
+        if ($method === 'GET') {
+            $this->parameters = $body;
+        } else {
+            $this->body = $body;
+        }
     }
 
     /**
@@ -90,6 +106,24 @@ class Request
     }
 
     /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        $parameters = '';
+
+        if (!empty($this->parameters)) {
+            $parameters = false === strpos($this->path, '?') ? '?' : '&';
+
+            foreach ($this->parameters as $name => $value) {
+                $parameters .= $name . '=' . $value;
+            }
+        }
+
+        return $this->path . $parameters;
+    }
+
+    /**
      * @param  array $body
      * @return self
      */
@@ -127,5 +161,41 @@ class Request
     {
         $this->path = $path;
         return $this;
+    }
+
+    /**
+     * @param mixed[] $parameters
+     */
+    public function setParameters(array $parameters)
+    {
+        $this->parameters = $parameters;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParameters()
+    {
+        return $this->parameters;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $parameter
+     * @return self
+     */
+    public function setParameter($name, $parameter)
+    {
+        $this->parameters[$name] = $parameter;
+        return $this;
+    }
+
+    /**
+     * @param  string $name
+     * @return mixed
+     */
+    public function getParameter($name)
+    {
+        return $this->parameters[$name];
     }
 }
