@@ -19,7 +19,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 class HttpClientFactory
 {
     /**
-     * @var \Symfony\Component\EventDispatcher\EventDispatcher
+     * @var EventDispatcher
      */
     private $dispatcher;
 
@@ -129,7 +129,7 @@ class HttpClientFactory
      * @param string $name
      * @param mixed  $value
      *
-     * @return HttpClient
+     * @return self
      */
     public function setOption($name, $value)
     {

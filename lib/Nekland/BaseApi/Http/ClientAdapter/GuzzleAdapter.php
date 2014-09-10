@@ -34,7 +34,7 @@ class GuzzleAdapter extends AbstractHttpClient
     {
         $method = $request->getMethod();
 
-        return $this->guzzle->$method($this->getPath($request->getPath()), [
+        return $this->guzzle->$method($this->getPath($request->getUrl()), [
             'headers' => $this->getHeaders($request->getHeaders()),
             'body'    => $request->getBody()
         ])->getBody();
