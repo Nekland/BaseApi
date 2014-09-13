@@ -110,17 +110,16 @@ class Request
      */
     public function getUrl()
     {
-        $parameters = '';
+        $url = $this->path;
 
         if (!empty($this->parameters)) {
-            $parameters = false === strpos($this->path, '?') ? '?' : '&';
-
             foreach ($this->parameters as $name => $value) {
-                $parameters .= $name . '=' . $value;
+                $start = false === strpos($url, '?') ? '?' : '&';
+                $url .= $start . $name . '=' . $value;
             }
         }
 
-        return $this->path . $parameters;
+        return $url;
     }
 
     /**
@@ -181,7 +180,7 @@ class Request
 
     /**
      * @param string $name
-     * @param mixed  $parameter
+     * @param string $parameter
      * @return self
      */
     public function setParameter($name, $parameter)
@@ -192,7 +191,7 @@ class Request
 
     /**
      * @param  string $name
-     * @return mixed
+     * @return string
      */
     public function getParameter($name)
     {
