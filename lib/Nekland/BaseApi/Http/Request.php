@@ -46,16 +46,25 @@ class Request
     private $parameters;
 
     /**
+     * Type of request, nothing to do with http but useful for transformers
+     *
+     * @var null|string
+     */
+    private $type;
+
+    /**
      * @param string $method
      * @param string $path
      * @param array  $body if the method is GET it's taken as parameters
      * @param array  $headers
+     * @param string $type
      */
-    public function __construct($method, $path, array $body = [], array $headers = [])
+    public function __construct($method, $path, array $body = [], array $headers = [], $type = null)
     {
         $this->method  = $method;
         $this->path    = $path;
         $this->headers = $headers;
+        $this->type    = $type;
 
         if ($method === 'GET') {
             $this->parameters = $body;
@@ -143,6 +152,15 @@ class Request
     }
 
     /**
+     * @param string $name
+     * @param string $content
+     */
+    public function setHeader($name, $content)
+    {
+        $this->headers[$name] = $content;
+    }
+
+    /**
      * @param  string $method
      * @return self
      */
@@ -196,5 +214,23 @@ class Request
     public function getParameter($name)
     {
         return $this->parameters[$name];
+    }
+
+    /**
+     * @param  null|string $type
+     * @return self
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 }

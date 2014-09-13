@@ -40,10 +40,11 @@ abstract class AbstractHttpClient
 
     /**
      * @param Request $request
+     * @param bool    $withEvent if an event send a request, in order to avoid infinite while
      * @return string
      * @throws \BadMethodCallException
      */
-    public function send(Request $request)
+    public function send(Request $request, $withEvent = true)
     {
         $method = $request->getMethod();
 
@@ -54,15 +55,19 @@ abstract class AbstractHttpClient
             ));
         }
 
-        /** @var RequestEvent $event */
-        $event = $this->getEventDispatcher()->dispatch(Events::ON_REQUEST_EVENT, new RequestEvent($request, $this));
+        $event = new RequestEvent($request, $this);
+        if ($withEvent) {
+            $event = $this->getEventDispatcher()->dispatch(Events::ON_REQUEST_EVENT, $event);
+        }
 
         if (!$event->requestCompleted()) {
             $res = $this->execute($request);
             $event->setResponse($res);
         }
 
-        $this->getEventDispatcher()->dispatch(Events::AFTER_REQUEST_EVENT, $event);
+        if ($withEvent) {
+            $this->getEventDispatcher()->dispatch(Events::AFTER_REQUEST_EVENT, $event);
+        }
 
         return $event->getResponse();
     }
@@ -94,7 +99,12 @@ abstract class AbstractHttpClient
      */
     protected function getPath($path)
     {
-        return $this->options['base_url'] . $path;
+        $hasHttp = strpos($path, 'http');
+        if (false === $hasHttp || $hasHttp !== 0) {
+            return $this->options['base_url'] . $path;
+        }
+
+        return $path;
     }
 
     /**

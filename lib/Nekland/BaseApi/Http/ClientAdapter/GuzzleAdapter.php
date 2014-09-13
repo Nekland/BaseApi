@@ -11,7 +11,6 @@
 
 namespace Nekland\BaseApi\Http\ClientAdapter;
 
-
 use GuzzleHttp\Client;
 use Nekland\BaseApi\Http\AbstractHttpClient;
 use Nekland\BaseApi\Http\Request;
