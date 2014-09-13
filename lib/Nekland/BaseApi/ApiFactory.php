@@ -46,8 +46,14 @@ abstract class ApiFactory
         TransformerInterface $transformer = null,
         AuthFactory $authFactory = null
     ) {
-        $this->dispatcher    = $dispatcher ?: new EventDispatcher();
-        $this->clientFactory = $httpClientFactory ?: new HttpClientFactory($this->dispatcher);
+        if ($httpClientFactory !== null) {
+            $this->clientFactory = $httpClientFactory;
+            $this->dispatcher = $dispatcher ?: $httpClientFactory->getEventDispatcher();
+        } else {
+            $this->dispatcher = $dispatcher ?: new EventDispatcher();
+            $this->clientFactory = new HttpClientFactory($this->dispatcher);
+        }
+
         $this->authFactory   = $authFactory;
         $this->transformer   = $transformer;
     }

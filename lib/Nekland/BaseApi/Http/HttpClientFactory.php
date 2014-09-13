@@ -137,4 +137,12 @@ class HttpClientFactory
 
         return $this;
     }
+
+    /**
+     * @return EventDispatcher
+     */
+    public function getEventDispatcher()
+    {
+        return $this->dispatcher;
+    }
 }
