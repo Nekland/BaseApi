@@ -58,7 +58,6 @@ abstract class ApiFactory
         $this->transformer   = $transformer;
     }
 
-
     /**
      * Allow the user to add an authentication to the request
      *
