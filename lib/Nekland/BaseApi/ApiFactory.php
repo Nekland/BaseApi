@@ -40,6 +40,11 @@ abstract class ApiFactory
      */
     private $transformer;
 
+    /**
+     * @var EventDispatcher
+     */
+    private $dispatcher;
+
     public function __construct(
         HttpClientFactory $httpClientFactory = null,
         EventDispatcher $dispatcher = null,
