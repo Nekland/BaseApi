@@ -12,6 +12,7 @@
 namespace Nekland\BaseApi;
 
 use Nekland\BaseApi\Api\AbstractApi;
+use Nekland\BaseApi\Cache\CacheFactory;
 use Nekland\BaseApi\Cache\CacheStrategyInterface;
 use Nekland\BaseApi\Exception\MissingApiException;
 
@@ -45,11 +46,17 @@ abstract class ApiFactory
      */
     private $dispatcher;
 
+    /**
+     * @var CacheFactory
+     */
+    private $cacheFactory;
+
     public function __construct(
         HttpClientFactory $httpClientFactory = null,
         EventDispatcher $dispatcher = null,
         TransformerInterface $transformer = null,
-        AuthFactory $authFactory = null
+        AuthFactory $authFactory = null,
+        CacheFactory $cacheFactory = null
     ) {
         if ($httpClientFactory !== null) {
             $this->clientFactory = $httpClientFactory;
@@ -60,6 +67,7 @@ abstract class ApiFactory
         }
 
         $this->authFactory   = $authFactory;
+        $this->cacheFactory  = $cacheFactory ?: new CacheFactory();
         $this->transformer   = $transformer;
     }
 
@@ -83,13 +91,16 @@ abstract class ApiFactory
     }
 
     /**
-     * @param CacheStrategyInterface  $cacheStrategy
+     * @param CacheStrategyInterface|string                                 $cacheStrategy
+     * @param \Nekland\BaseApi\Cache\Provider\CacheProviderInterface|string $cacheProvider
+     * @param array                                                         $options
      */
-    public function useCache(CacheStrategyInterface $cacheStrategy)
+    public function useCache($cacheStrategy, $cacheProvider = null, array $options = null)
     {
+        $cache = $this->getCacheFactory()->createCacheStrategy($cacheStrategy, $cacheProvider, $options);
         $this->dispatcher->addListener(
             Events::ON_REQUEST_EVENT,
-            [ $cacheStrategy, 'execute' ]
+            [ $cache, 'execute' ]
         );
     }
 
@@ -172,9 +183,17 @@ abstract class ApiFactory
     /**
      * @return AuthFactory
      */
-    protected function getAuthFactory()
+    public function getAuthFactory()
     {
         return $this->authFactory ?: $this->authFactory = new AuthFactory($this->getClient());
+    }
+
+    /**
+     * @return CacheFactory
+     */
+    public function getCacheFactory()
+    {
+        return $this->cacheFactory;
     }
 
     /**

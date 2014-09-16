@@ -12,6 +12,7 @@
 namespace Nekland\BaseApi\Cache;
 
 
+use Nekland\BaseApi\Cache\Provider\CacheProviderInterface;
 use Nekland\BaseApi\Http\Event\RequestEvent;
 
 interface CacheStrategyInterface
@@ -20,4 +21,9 @@ interface CacheStrategyInterface
      * @param  RequestEvent $event
      */
     public function execute(RequestEvent $event);
+
+    /**
+     * @param CacheProviderInterface $provider
+     */
+    public function setProvider(CacheProviderInterface $provider);
 }

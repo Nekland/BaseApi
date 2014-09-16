@@ -59,7 +59,7 @@ class GuzzleAdapterSpec extends ObjectBehavior
         ;
 
         $request->getMethod()->willReturn('get');
-        $request->getPath()->willReturn('api.com');
+        $request->getUrl()->willReturn('api.com');
         $request->getHeaders()->willReturn([]);
         $request->getBody()->willReturn([]);
 
