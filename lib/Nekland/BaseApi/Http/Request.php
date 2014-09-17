@@ -227,6 +227,16 @@ class Request
     }
 
     /**
+     * Return an id uniq for this request with identicals parameters
+     *
+     * @return string
+     */
+    public function getId()
+    {
+        return base64_encode($this->path . implode('', $this->parameters) . implode('', $this->body) . $this->method);
+    }
+
+    /**
      * @return null|string
      */
     public function getType()

@@ -23,6 +23,11 @@ interface CacheStrategyInterface
     public function execute(RequestEvent $event);
 
     /**
+     * @param RequestEvent $event
+     */
+    public function cache(RequestEvent $event);
+
+    /**
      * @param CacheProviderInterface $provider
      */
     public function setProvider(CacheProviderInterface $provider);

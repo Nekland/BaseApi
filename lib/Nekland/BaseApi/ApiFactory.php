@@ -102,6 +102,10 @@ abstract class ApiFactory
             Events::ON_REQUEST_EVENT,
             [ $cache, 'execute' ]
         );
+        $this->dispatcher->addListener(
+            Events::AFTER_REQUEST_EVENT,
+            [ $cache, 'cache' ]
+        );
     }
 
     /**

@@ -14,6 +14,7 @@ namespace Nekland\BaseApi\Http\Event;
 
 use Nekland\BaseApi\Http\AbstractHttpClient;
 use Nekland\BaseApi\Http\Request;
+use Nekland\BaseApi\Http\Response;
 use Symfony\Component\EventDispatcher\Event;
 
 class RequestEvent extends Event
@@ -24,7 +25,7 @@ class RequestEvent extends Event
     private $request;
 
     /**
-     * @var string
+     * @var Response
      */
     private $response;
 
@@ -48,15 +49,10 @@ class RequestEvent extends Event
     }
 
     /**
-     * @param  mixed $response
-     * @throws \InvalidArgumentException
+     * @param  Response $response
      */
-    public function setResponse($response)
+    public function setResponse(Response $response)
     {
-        if (!is_string($response)) {
-            throw new \InvalidArgumentException('The response should be send as string');
-        }
-
         $this->response = $response;
     }
 
@@ -69,7 +65,7 @@ class RequestEvent extends Event
     }
 
     /**
-     * @return string
+     * @return Response
      */
     public function getResponse()
     {

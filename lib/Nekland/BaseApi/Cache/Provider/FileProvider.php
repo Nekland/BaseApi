@@ -47,6 +47,10 @@ class FileProvider implements CacheProviderInterface
 
     public function get($key)
     {
+        if (!isset($this->cache[$key])) {
+            return null;
+        }
+
         return $this->cache[$key];
     }
 
@@ -66,5 +70,10 @@ class FileProvider implements CacheProviderInterface
         return $this->options ?: [
             'path' => sys_get_temp_dir() . '/nekland_api_cache_file'
         ];
+    }
+
+    public function __destruct()
+    {
+        $this->save();
     }
 }

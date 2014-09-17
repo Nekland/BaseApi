@@ -69,14 +69,14 @@ abstract class AbstractHttpClient
             $this->getEventDispatcher()->dispatch(Events::AFTER_REQUEST_EVENT, $event);
         }
 
-        return $event->getResponse();
+        return (string) $event->getResponse();
     }
 
     /**
      * Execute a request
      *
      * @param Request $request
-     * @return string
+     * @return Response
      */
     abstract protected function execute(Request $request);
 
@@ -119,6 +119,16 @@ abstract class AbstractHttpClient
     public static function createRequest($method, $path, array $parameters = [], array $headers = [])
     {
         return new Request($method, $path, $parameters, $headers);
+    }
+
+    /**
+     * @param string $body
+     * @param array  $headers
+     * @return Response
+     */
+    public static function createResponse($body, array $headers)
+    {
+        return new Response($body, $headers);
     }
 
     /**
