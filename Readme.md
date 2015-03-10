@@ -13,9 +13,9 @@ Both libs have the same needs. To avoid duplicated code, I made this little proj
 How
 ---
 
-[x] [Semver](http://semver.org) compliant
-[x] [HHVM](http://hhvm.com/) compatible
-[x] [Composer](http://packagist) installable
+- [x] [Semver](http://semver.org) compliant
+- [x] [HHVM](http://hhvm.com/) compatible
+- [x] [Composer](http://packagist) installable
 
 Documentation
 -------------
