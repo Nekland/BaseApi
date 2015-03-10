@@ -1,6 +1,8 @@
 Nekland Base API
 ================
 
+[![Build Status](https://travis-ci.org/Nekland/BaseApi.svg)](https://travis-ci.org/Nekland/BaseApi)
+
 Why
 ---
 
