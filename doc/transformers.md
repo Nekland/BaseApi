@@ -1,7 +1,7 @@
 Transformers
 ============
 
-Transformers are classes implementing the `` interface.
+Transformers are classes implementing the `TransformerInterface` interface.
 
 You can set them by using the `setTransformer` of the `ApiFactory` class.
 
