@@ -4,6 +4,7 @@ namespace spec\Nekland\BaseApi\Http\ClientAdapter;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Message\MessageInterface;
+use GuzzleHttp\Message\ResponseInterface;
 use Nekland\BaseApi\Http\Event\RequestEvent;
 use Nekland\BaseApi\Http\Request;
 use PhpSpec\ObjectBehavior;
@@ -47,10 +48,12 @@ class GuzzleAdapterSpec extends ObjectBehavior
         EventDispatcher  $dispatcher,
         Request          $request,
         RequestEvent     $requestEvent,
-        MessageInterface $result
+        ResponseInterface $result
     ) {
         $guzzle->get('api.com', Argument::any())->shouldBeCalled();
         $guzzle->get('api.com', Argument::any())->willReturn($result);
+        $result->getHeaders()->willReturn([]);
+        $result->getBody()->willReturn('');
 
         $requestEvent->requestCompleted()->willReturn(false);
         $dispatcher

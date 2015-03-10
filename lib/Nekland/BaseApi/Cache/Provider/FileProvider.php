@@ -27,6 +27,7 @@ class FileProvider implements CacheProviderInterface
     public function setOptions(array $options)
     {
         $this->options = array_merge($this->getOptions(), $options);
+
         return $this;
     }
 
@@ -57,9 +58,13 @@ class FileProvider implements CacheProviderInterface
     public function set($key, $value)
     {
         $this->cache[$key] = $value;
+
         return $this;
     }
 
+    /**
+     * @return string
+     */
     protected function getPath()
     {
         return $this->options['path'];
@@ -74,6 +79,8 @@ class FileProvider implements CacheProviderInterface
 
     public function __destruct()
     {
-        $this->save();
+        if (null !== $this->getPath()) {
+            $this->save();
+        }
     }
 }
