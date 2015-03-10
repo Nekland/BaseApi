@@ -11,20 +11,118 @@
 
 namespace Nekland\BaseApi\Api;
 
-
 use Nekland\BaseApi\Api;
+use Nekland\BaseApi\Http\AbstractHttpClient;
+use Nekland\BaseApi\Transformer\JsonTransformer;
+use Nekland\BaseApi\Transformer\TransformerInterface;
 
 abstract class AbstractApi
 {
-    protected $api;
+    /**
+     * @var AbstractHttpClient
+     */
+    private $client;
 
-    public function __construct(Api $api)
-    {
-        $this->api = $api;
+    /**
+     * @var TransformerInterface
+     */
+    private $transformer;
+
+    public function __construct(AbstractHttpClient $client, TransformerInterface $transformer = null) {
+        $this->client      = $client;
+        $this->transformer = $transformer ?: new JsonTransformer();
     }
 
-    protected function get($path, array $parameters = [], array $requestHeaders = [])
+    /**
+     * Set the transformer that will be used to return data
+     *
+     * @param  TransformerInterface $transformer
+     * @return self
+     */
+    public function setTransformer(TransformerInterface $transformer)
     {
-        return json_decode((string) $this->api->getClient()->get($path, $parameters, $requestHeaders), true);
+        $this->transformer = $transformer;
+
+        return $this;
+    }
+
+    /**
+     * Execute a http get query
+     *
+     * @param  string $path
+     * @param  array  $body
+     * @param  array  $headers
+     * @return array|mixed
+     */
+    protected function get($path, array $body = [], array $headers = [])
+    {
+        $client  = $this->getClient();
+        $request = $client::createRequest('GET', $path, $body, $headers);
+
+        return $this->transformer->transform($client->send($request));
+    }
+
+    /**
+     * Execute a http put query
+     *
+     * @param  string $path
+     * @param  array  $body
+     * @param  array  $headers
+     * @return array|mixed
+     */
+    protected function put($path, array $body = [], array $headers = [])
+    {
+        $client  = $this->getClient();
+        $request = $client::createRequest('PUT', $path, $body, $headers);
+
+        return $this->transformer->transform($client->send($request));
+    }
+
+    /**
+     * Execute a http post query
+     *
+     * @param  string $path
+     * @param  array  $body
+     * @param  array  $headers
+     * @return array|mixed
+     */
+    protected function post($path, array $body = [], array $headers = [])
+    {
+        $client  = $this->getClient();
+        $request = $client::createRequest('POST', $path, $body, $headers);
+
+        return $this->transformer->transform($client->send($request));
+    }
+
+    /**
+     * Execute a http delete query
+     *
+     * @param  string $path
+     * @param  array  $body
+     * @param  array  $headers
+     * @return array|mixed
+     */
+    protected function delete($path, array $body = [], array $headers = [])
+    {
+        $client  = $this->getClient();
+        $request = $client::createRequest('DELETE', $path, $body, $headers);
+
+        return $this->transformer->transform($client->send($request));
+    }
+
+    /**
+     * @return AbstractHttpClient
+     */
+    protected function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
+     * @return TransformerInterface
+     */
+    protected function getTransformer()
+    {
+        return $this->transformer;
     }
 }

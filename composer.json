@@ -7,20 +7,35 @@
     "authors": [
         {
             "name":     "Maxime Veber",
-            "email":    "nekland@gmail.com",
+            "email":    "nek.dev@gmail.com",
             "homepage": "http://nekland.fr"
+        },
+        {
+            "name":     "Nekland Team",
+            "email":    "team@nekland.fr",
+            "homepage": "http://team.nekland.fr"
         }
     ],
+    "require": {
+        "php": ">=5.4",
+        "symfony/event-dispatcher": "~2.3"
+    },
+    "require-dev": {
+        "phpspec/phpspec":   "dev-master",
+        "guzzlehttp/guzzle": "~4.2"
+    },
     "suggest": {
         "nekland/youtube-api":    "Youtube API made easy !",
         "nekland/soundcloud-api": "Soundcloud API made easy !",
-        "guzzle/guzzle":                  "The default HttpClient will not work without this library."
+        "guzzlehttp/guzzle":      "The only http adapter available for now is for this library."
     },
     "autoload": {
         "psr-0": { "Nekland\\": "lib/" }
     },
-    "require-dev": {
-        "php":             ">=5.4",
-        "phpunit/phpunit": ">=3.7"
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
     }
 }
