@@ -9,16 +9,11 @@
  * on the root directory of this project
  */
 
-namespace Nekland\BaseApi;
+namespace Nekland\BaseApi\Http\Event;
 
 
-interface ApiInterface
+class Events
 {
-    /**
-     * Return an api object
-     *
-     * @param string $name
-     * @return mixed
-     */
-    public function api($name);
-} 
+    const ON_REQUEST_EVENT = 'nekland_api.on_http_request';
+    const AFTER_REQUEST_EVENT = 'nekland_api.after_http_request';
+}

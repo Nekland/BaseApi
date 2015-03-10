@@ -11,8 +11,9 @@
 
 namespace Nekland\BaseApi\Http\Auth;
 
+use Nekland\BaseApi\Http\Event\RequestEvent;
 
-interface AuthInterface
+interface AuthStrategyInterface
 {
     /**
      * @param array $options
@@ -21,7 +22,7 @@ interface AuthInterface
     public function setOptions(array $options);
 
     /**
-     * @param \Guzzle\Http\Message\Request $request
+     * @param RequestEvent $request
      */
-    public function auth(\Guzzle\Http\Message\Request $request);
+    public function auth(RequestEvent $request);
 }

@@ -9,12 +9,10 @@
  * on the root directory of this project
  */
 
-namespace Nekland\BaseApi\Http;
+namespace Nekland\BaseApi\Exception;
 
 
-interface ClientInterface
+class MissingOptionException extends \Exception
 {
-    public function get($path, array $parameters = [], array $headers = []);
 
-    public function authenticate($method, array $options);
 }
