@@ -1,4 +1,9 @@
-1.0.0 (2014-09-XX)
+1.0.1 (2015-03-11)
+==================
+
+* 2 new extensions to make easier error management
+
+1.0.0 (2015-03-10)
 ==================
 
 New awesome features
