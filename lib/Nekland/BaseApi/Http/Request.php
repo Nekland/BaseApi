@@ -53,13 +53,13 @@ class Request
     private $type;
 
     /**
-     * @param string $method
-     * @param string $path
-     * @param array  $body if the method is GET it's taken as parameters
-     * @param array  $headers
-     * @param string $type
+     * @param string        $method
+     * @param string        $path
+     * @param array|string  $body if the method is GET it's taken as parameters
+     * @param array         $headers
+     * @param string        $type
      */
-    public function __construct($method, $path, array $body = [], array $headers = [], $type = null)
+    public function __construct($method, $path, $body = [], array $headers = [], $type = null)
     {
         $this->method  = $method;
         $this->path    = $path;
@@ -227,7 +227,7 @@ class Request
     }
 
     /**
-     * Return an id uniq for this request with identicals parameters
+     * Return an id unique for this request with identical parameters
      *
      * @return string
      */

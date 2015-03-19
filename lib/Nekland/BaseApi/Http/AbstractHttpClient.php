@@ -110,15 +110,15 @@ abstract class AbstractHttpClient
     /**
      * Generate a request object
      *
-     * @param  string $method
-     * @param  string $path
-     * @param  array  $parameters
-     * @param  array  $headers
+     * @param  string        $method
+     * @param  string        $path
+     * @param  array|string  $body
+     * @param  array         $headers
      * @return Request
      */
-    public static function createRequest($method, $path, array $parameters = [], array $headers = [])
+    public static function createRequest($method, $path, $body = [], array $headers = [])
     {
-        return new Request($method, $path, $parameters, $headers);
+        return new Request($method, $path, $body, $headers);
     }
 
     /**
