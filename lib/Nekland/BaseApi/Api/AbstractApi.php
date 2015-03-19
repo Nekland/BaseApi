@@ -49,15 +49,15 @@ abstract class AbstractApi
     /**
      * Execute a http get query
      *
-     * @param  string $path
-     * @param  array  $body
-     * @param  array  $headers
+     * @param  string        $path
+     * @param  array|string  $body
+     * @param  array         $headers
      * @return array|mixed
      */
-    protected function get($path, array $body = [], array $headers = [])
+    protected function get($path, $body = [], array $headers = [])
     {
         $client  = $this->getClient();
-        $request = $client::createRequest('GET', $path, $body, $headers);
+        $request = AbstractHttpClient::createRequest('GET', $path, $body, $headers);
 
         return $this->transformer->transform($client->send($request));
     }
@@ -73,7 +73,7 @@ abstract class AbstractApi
     protected function put($path, $body = [], array $headers = [])
     {
         $client  = $this->getClient();
-        $request = $client::createRequest('PUT', $path, $body, $headers);
+        $request = AbstractHttpClient::createRequest('PUT', $path, $body, $headers);
 
         return $this->transformer->transform($client->send($request));
     }
@@ -89,7 +89,7 @@ abstract class AbstractApi
     protected function post($path, $body = [], array $headers = [])
     {
         $client  = $this->getClient();
-        $request = $client::createRequest('POST', $path, $body, $headers);
+        $request = AbstractHttpClient::createRequest('POST', $path, $body, $headers);
 
         return $this->transformer->transform($client->send($request));
     }
@@ -105,7 +105,7 @@ abstract class AbstractApi
     protected function delete($path, $body = [], array $headers = [])
     {
         $client  = $this->getClient();
-        $request = $client::createRequest('DELETE', $path, $body, $headers);
+        $request = AbstractHttpClient::createRequest('DELETE', $path, $body, $headers);
 
         return $this->transformer->transform($client->send($request));
     }
