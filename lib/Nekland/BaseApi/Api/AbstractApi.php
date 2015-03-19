@@ -49,12 +49,12 @@ abstract class AbstractApi
     /**
      * Execute a http get query
      *
-     * @param  string $path
-     * @param  array  $body
-     * @param  array  $headers
+     * @param  string        $path
+     * @param  array|string  $body
+     * @param  array         $headers
      * @return array|mixed
      */
-    protected function get($path, array $body = [], array $headers = [])
+    protected function get($path, $body = [], array $headers = [])
     {
         $client  = $this->getClient();
         $request = AbstractHttpClient::createRequest('GET', $path, $body, $headers);
