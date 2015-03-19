@@ -63,7 +63,7 @@ abstract class ApiFactory
             $this->dispatcher = $dispatcher ?: $httpClientFactory->getEventDispatcher();
         } else {
             $this->dispatcher = $dispatcher ?: new EventDispatcher();
-            $this->clientFactory = new HttpClientFactory($this->dispatcher);
+            $this->clientFactory = new HttpClientFactory([], $this->dispatcher);
         }
 
         $this->authFactory   = $authFactory;
