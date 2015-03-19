@@ -1,3 +1,13 @@
+1.1.1 (2015-XX-XX)
+==================
+
+1.1.0 (2015-03-19)
+==================
+
+* Added possibility to send string as body (json string in most cases)
+* Make the lib more testable by changing the way to call static methods
+* Fixed wrong instanciation of the HttpClientFactory in default behavior of the ApiFactory
+
 1.0.1 (2015-03-11)
 ==================
 
