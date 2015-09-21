@@ -73,6 +73,15 @@ abstract class AbstractHttpClient
     }
 
     /**
+     * @param string $option
+     * @param mixed  $default
+     */
+    public function getOption($option, $default = null)
+    {
+        return isset($this->options[$option]) ? $this->options[$option] : $default;
+    }
+
+    /**
      * Execute a request
      *
      * @param Request $request
