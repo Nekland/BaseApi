@@ -1,5 +1,10 @@
-1.1.2 (2015-XX-XX)
+1.1.3 (2015-XX-XX)
 ==================
+
+1.1.2 (2015-10-13)
+==================
+
+* Added possibility to specify guzzle options for the default client adapter
 
 1.1.1 (2015-09-21)
 ==================
