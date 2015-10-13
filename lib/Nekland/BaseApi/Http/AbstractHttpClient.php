@@ -75,6 +75,7 @@ abstract class AbstractHttpClient
     /**
      * @param string $option
      * @param mixed  $default
+     * @return mixed
      */
     public function getOption($option, $default = null)
     {

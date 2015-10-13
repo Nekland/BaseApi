@@ -26,7 +26,9 @@ class GuzzleAdapter extends AbstractHttpClient
     public function __construct(EventDispatcher $dispatcher, array $options = [], Client $client = null)
     {
         parent::__construct($dispatcher, $options);
-        $this->guzzle = $client ?: new Client();
+
+        $guzzleOptions = isset($options['guzzle']) ? $options['guzzle'] : [];
+        $this->guzzle = $client ?: new Client($guzzleOptions);
     }
 
     protected function execute(Request $request)
