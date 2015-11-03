@@ -144,7 +144,7 @@ abstract class AbstractHttpClient
     /**
      * @return EventDispatcher
      */
-    protected function getEventDispatcher()
+    public function getEventDispatcher()
     {
         return $this->dispatcher;
     }
