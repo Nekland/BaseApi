@@ -1,6 +1,8 @@
 1.1.3 (2015-XX-XX)
 ==================
 
+* EventDispatcher available from http client
+
 1.1.2 (2015-10-13)
 ==================
 
