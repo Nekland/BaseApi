@@ -3,8 +3,7 @@
 namespace spec\Nekland\BaseApi\Http\ClientAdapter;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Message\MessageInterface;
-use GuzzleHttp\Message\ResponseInterface;
+use Psr\Http\Message\ResponseInterface;
 use Nekland\BaseApi\Http\Event\RequestEvent;
 use Nekland\BaseApi\Http\Request;
 use PhpSpec\ObjectBehavior;
