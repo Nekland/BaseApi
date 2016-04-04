@@ -3,7 +3,7 @@
 namespace spec\Nekland\BaseApi\Http\ClientAdapter;
 
 use GuzzleHttp\Client;
-use Psr\Http\Message\ResponseInterface;
+use Prophecy\Exception\Doubler\ClassNotFoundException;
 use Nekland\BaseApi\Http\Event\RequestEvent;
 use Nekland\BaseApi\Http\Request;
 use PhpSpec\ObjectBehavior;
@@ -47,8 +47,27 @@ class GuzzleAdapterSpec extends ObjectBehavior
         EventDispatcher  $dispatcher,
         Request          $request,
         RequestEvent     $requestEvent,
-        ResponseInterface $result
+        $result
     ) {
+        /**
+         * As Guzzle introduces PSR-7 implementation of messages in Guzzle 6.x,
+         * and as this adapter should handle Guzzle 4+,
+         * the stub is created depending on this implementation of messages.
+         * Don't worry, this interface is just useful for tests
+         * but it's not directly used in the class.
+         * @link https://github.com/guzzle/guzzle/blob/6.0.0/UPGRADING.md#50-to-60
+         */
+        if (interface_exists('Psr\Http\Message\ResponseInterface')) {
+            // For the official PSR-7 implementation of messages (Guzzle 6+)
+            $result->beADoubleOf('Psr\Http\Message\ResponseInterface');
+        } elseif (interface_exists('GuzzleHttp\Message\MessageInterface')) {
+            // For the Guzzle implementation of messages (Guzzle 4<x<6)
+            $result->beADoubleOf('GuzzleHttp\Message\MessageInterface');
+        } else {
+            // Did you really installed Guzzle 4+ ?
+            throw new ClassNotFoundException('No MessageInterface found', 'MessageInterface');
+        }
+
         $guzzle->get('api.com', Argument::any())->shouldBeCalled();
         $guzzle->get('api.com', Argument::any())->willReturn($result);
         $result->getHeaders()->willReturn([]);

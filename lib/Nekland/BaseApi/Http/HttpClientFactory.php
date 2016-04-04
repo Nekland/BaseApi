@@ -27,7 +27,7 @@ class HttpClientFactory
      * @var array
      */
     private $classes = [
-        'guzzle4' => [
+        'guzzle4+' => [
             'class'       => 'Nekland\BaseApi\Http\ClientAdapter\GuzzleAdapter',
             'requirement' => 'GuzzleHttp\Client'
         ]
