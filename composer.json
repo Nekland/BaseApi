@@ -18,11 +18,11 @@
     ],
     "require": {
         "php": ">=5.6",
-        "symfony/event-dispatcher": "~2.3"
+        "symfony/event-dispatcher": "~2.3|~3.0"
     },
     "require-dev": {
-        "phpspec/phpspec":   "dev-master",
-        "guzzlehttp/guzzle": "~4.2"
+        "phpspec/phpspec":   "^2.5.0",
+        "guzzlehttp/guzzle": "^6.2.0"
     },
     "suggest": {
         "nekland/youtube-api":    "Youtube API made easy !",
