@@ -1,4 +1,7 @@
-1.1.3 (2015-XX-XX)
+1.1.4 (2017-XX-XX)
+==================
+
+1.1.3 (2017-02-12)
 ==================
 
 * EventDispatcher available from http client
