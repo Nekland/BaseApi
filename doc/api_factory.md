@@ -9,7 +9,7 @@ This class instantiate "[Api classes](api_classes.md)" when you use it like that
 $apiFactory->getMyAwesomeApi();
 ```
 
-So the first thing you have to do when building your API is to extend it and implement the only needed method.
+So the first thing you have to do when building your API is to extend it and implement the only needed method by extending the `Nekland\BaseApi\ApiFactory` class.
 
 You can also:
 
